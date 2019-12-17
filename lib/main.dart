@@ -24,8 +24,8 @@ class Todo {
   bool isDone;
 
   Todo({
-    this.name ='',
-    this.desc ='',
+    this.name = '',
+    this.desc = '',
     this.isDone = false,
   });
 }
@@ -218,7 +218,7 @@ class TodoTile extends StatelessWidget {
 class EditTodo extends StatelessWidget {
   const EditTodo({
     Key key,
-    this.todo
+    this.todo = Todo(name: '', desc: ''),
   }) : super(key: key);
 
   final Todo todo;
