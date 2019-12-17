@@ -55,6 +55,7 @@ class _TodoListViewState extends State<TodoListView> {
         child: TodoList(
           todos: todos,
           onTog: onTog,
+          onDelete: deleteTodo,
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -64,6 +65,12 @@ class _TodoListViewState extends State<TodoListView> {
         },
       ),
     );
+  }
+
+  void deleteTodo(int index) {
+    setState(() {
+      todos.removeAt(index);
+    });
   }
 
   void onTog(Todo todo) {
@@ -80,19 +87,23 @@ class _TodoListViewState extends State<TodoListView> {
           builder: (context) => EditTodo(),
         ));
     todos.add(newTodo);
+    return;
   }
 }
 
 typedef OnTogCallback = void Function(Todo);
+typedef OnDeleteCallback = void Function(int);
 
 class TodoList extends StatelessWidget {
   const TodoList({
     Key key,
     this.todos,
     this.onTog,
+    this.onDelete,
   }) : super(key: key);
   final List<Todo> todos;
-  final onTog;
+  final OnTogCallback onTog;
+  final OnDeleteCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +115,7 @@ class TodoList extends StatelessWidget {
             todo: todos[index],
             index: index,
             onTog: onTog,
+            onDelete: onDelete,
           );
         },
       ),
@@ -117,10 +129,12 @@ class TodoTile extends StatelessWidget {
     this.index,
     this.todo,
     this.onTog,
+    this.onDelete,
   }) : super(key: key);
   final Todo todo;
   final int index;
   final OnTogCallback onTog;
+  final OnDeleteCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +159,7 @@ class TodoTile extends StatelessWidget {
                         Stack(
                           alignment: Alignment.center,
                           children: <Widget>[
-                            todo.isDone ? Container() : Text('$index'),
+                            todo.isDone ? Container() : Text('${index + 1}'),
                             Icon(
                               todo.isDone
                                   ? Icons.check_box
@@ -167,6 +181,9 @@ class TodoTile extends StatelessWidget {
                           builder: (context) => EditTodo(todo: todo),
                         ),
                       );
+                    },
+                    onLongPress: () {
+                      onDelete(index);
                     },
                     child: Container(
                       padding: EdgeInsets.all(1),
