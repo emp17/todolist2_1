@@ -218,7 +218,7 @@ class TodoTile extends StatelessWidget {
 class EditTodo extends StatelessWidget {
   const EditTodo({
     Key key,
-    this.todo = Todo(name: '', desc: ''),
+    this.todo,
   }) : super(key: key);
 
   final Todo todo;
