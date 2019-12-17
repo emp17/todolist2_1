@@ -60,11 +60,7 @@ class _TodoListViewState extends State<TodoListView> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditTodo(),
-              ));
+          addTodo();
         },
       ),
     );
@@ -77,12 +73,13 @@ class _TodoListViewState extends State<TodoListView> {
     return;
   }
 
-  void addTodo() {
-    Navigator.push(
+  void addTodo() async {
+    Todo newTodo = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => EditTodo(),
         ));
+    todos.add(newTodo);
   }
 }
 
@@ -216,20 +213,27 @@ class TodoTile extends StatelessWidget {
 }
 
 class EditTodo extends StatelessWidget {
-  const EditTodo({
+  EditTodo({
     Key key,
     this.todo,
   }) : super(key: key);
 
-  final Todo todo;
+  Todo todo;
 
   @override
   Widget build(BuildContext context) {
+    bool isNew = true;
+    print(todo);
+    todo == null ? todo = new Todo(name: '', desc: '') : isNew = false;
     return Scaffold(
         appBar: AppBar(
           title: Text(todo.name),
-          // automaticallyImplyLeading: true,
-          // leading: Icon(Icons.arrow_back_ios),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
         ),
         body: Container(
           child: Column(
@@ -252,6 +256,20 @@ class EditTodo extends StatelessWidget {
                   todo.desc = text;
                 },
               ),
+              isNew
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        FlatButton(
+                          color: Colors.blueGrey[100],
+                          child: Text('Create'),
+                          onPressed: () {
+                            Navigator.of(context).pop(todo);
+                          },
+                        )
+                      ],
+                    )
+                  : Container()
             ],
           ),
         ));
